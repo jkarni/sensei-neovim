@@ -53,6 +53,31 @@ function! <SID>FindGHCI()
     endif
 endfunction
 
+function! <SID>FindBaseDir()
+  " search Cabal file - taken from ghcmod-vim
+    if !exists('b:sensei_basedir')
+        let l:sensei_basedir = expand('%:p:h')
+        let l:dir = l:sensei_basedir
+        for _ in range(6)
+            if !empty(glob(l:dir . '/*.cabal', 0))
+                let l:sensei_basedir = l:dir
+                break
+            endif
+            let l:dir = fnamemodify(l:dir, ':h')
+        endfor
+        let b:sensei_basedir = l:sensei_basedir
+    endif
+    return b:sensei_basedir
+endfunction
+
+function! <SID>IsSandbox()
+    let l:sensei_basedir = <SID>FindBaseDir()
+    let l:guess = l:sensei_basedir . '/.cabal-sandbox'
+    if empty(glob(l:guess))
+        echom 'No sandbox found at ' . l:sensei_basedir
+    endif
+    return !empty(glob(l:guess))
+endfunction
 
 " Hooks ----------------------------------------------------------------------
 function! <SID>OnBufEnter()
@@ -79,10 +104,14 @@ function! sensei#SenseiSpawn(cmd)
     else
         let l:sensei_cmd = 'sensei ' . a:cmd
     endif
-    if exists('b:sensei_ghci')
-        lcd b:sensei_ghci
+    if <SID>IsSandbox()
+        let l:sensei_cmd = 'cabal exec ' . l:sensei_cmd . ' -- ' . g:sensei_opts
+    else
+        let l:sensei_cmd = l:sensei_cmd . ' ' . g:sensei_opts
     endif
+    lcd `=<SID>FindBaseDir()`
     enew | let t:sensei_term_id = termopen(l:sensei_cmd)
+    lcd -
     let t:sensei_buf = bufnr('%')
     let sensei_pattern = 'term://*//'.string(b:terminal_job_pid).':*'
     let onbufenter = 'autocmd BufEnter ' . sensei_pattern . '* call <SID>OnBufEnter()'
@@ -100,8 +129,7 @@ call <SID>InitVar("g:senseiLocRegex", "[^ :]*:[0-9]\\+:.*(best-effort)")
 call <SID>InitVar("g:ghcLocRegex", "[^ :]*:[0-9]\\+:\[0-9]*:")
 call <SID>InitVar("g:allLocRegex", "\\m\\(" . g:senseiLocRegex . "\\|" . g:ghcLocRegex . "\\)")
 call <SID>InitVar("g:sensei_cmd", "sensei")
+call <SID>InitVar("g:sensei_opts", "-isrc -itest")
 call <SID>InitVar("g:sensei_default_options", "test/Spec.hs")
 call <SID>InitVar("g:sensei_width", 80)
 call <SID>InitVar("g:sensei_window_loc", "right")
-call <SID>InitVar("g:sensei_cmd", "sensei -idoctest/ghci-wrapper/src -isrc -itest test/Spec.hs")
-call <SID>FindGHCI()
