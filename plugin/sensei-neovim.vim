@@ -11,4 +11,4 @@
 
 
 " Shortcuts ------------------------------------------------------------------
-command! Sensei call sensei-neovim#SenseiSpawn()
+command! Sensei call sensei#SenseiSpawn()

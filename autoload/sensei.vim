@@ -73,7 +73,7 @@ function! <SID>OnBufLeave()
 endfunction
 
 " Spawn -----------------------------------------------------------------------
-function! <SID>SenseiSpawn()
+function! sensei#SenseiSpawn()
     let splitLocation = g:sensei_window_loc ==# "left" ? "topleft " : "botright "
     silent! execute splitLocation . 'vertical ' . g:sensei_width . ' split'
     set winfixwidth
