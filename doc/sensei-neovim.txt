@@ -1,30 +1,30 @@
-*autospec-vim.txt* Run hspec tests in a dynamically-updating quickfix window
+*sensei-neovim.txt* Run hspec tests in a dynamically-updating quickfix window
 
 ==============================================================================
-CONTENTS                                               *autospec-vim-contents*
+CONTENTS                                               *sensei-neovim-contents*
 
-    1. Intro............................|autospec-vim|
-        1.1 Requirements................|autospec-vim-requirements|
-    2. Functionality....................|autospec-vim-functionality|
-        2.1 Configuration...............|autospec-vim-configuration|
-        2.2 Options.....................|autospec-vim-options|
-    3. License..........................|autospec-vim-license|
+    1. Intro............................|sensei-neovim|
+        1.1 Requirements................|sensei-neovim-requirements|
+    2. Functionality....................|sensei-neovim-functionality|
+        2.1 Configuration...............|sensei-neovim-configuration|
+        2.2 Options.....................|sensei-neovim-options|
+    3. License..........................|sensei-neovim-license|
 
 ==============================================================================
-1. Intro                                                        *autospec-vim*
+1. Intro                                                        *sensei-neovim*
 
-autospec-vim is a plugin for neovim that makes a window that functions a lot
+sensei-neovim is a plugin for neovim that makes a window that functions a lot
 like the quickfix window. In constrast with the quickfix window, however, it
 uses neovim's "termopen", allowing the quickfix command to be updated
 continuously.
 
-It was designed with autospec (https://github.com/hspec/autospec) in mind,
+It was designed with sensei (https://github.com/hspec/sensei) in mind,
 although it should work with other tools as well.
 
 ------------------------------------------------------------------------------
-1.1 Requirements                                   *autospec-vim-requirements*
+1.1 Requirements                                   *sensei-neovim-requirements*
 
-autospec-vim requires neovim with +terminal (termopen) support.
+sensei-neovim requires neovim with +terminal (termopen) support.
 
 ==============================================================================
-2. Functionality                                  *autospec-vim-functionality*
+2. Functionality                                  *sensei-neovim-functionality*

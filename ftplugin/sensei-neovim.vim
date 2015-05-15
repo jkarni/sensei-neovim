@@ -1,7 +1,7 @@
 ""----------------------------------------------------------------------------
-"" autospec.vim
+"" sensei.vim
 ""
-""   Use ":Autospec" to start autospec in a new buffer. In that buffer:
+""   Use ":Sensei" to start sensei in a new buffer. In that buffer:
 ""       n:   go to next filename
 ""       N:   go to previous filename
 ""       o:   open filename under cursor
@@ -10,7 +10,7 @@
 ""----------------------------------------------------------------------------
 
 " For non-nix, uncomment the following line
-"let g:autospec_cmd = "autospec -idoctest/ghci-wrapper/src -isrc -itest test/Spec.hs"
+"let g:sensei_cmd = "sensei -idoctest/ghci-wrapper/src -isrc -itest test/Spec.hs"
 
 " Configurable vars ----------------------------------------------------------
 function! <SID>InitVar(var, value)
@@ -22,13 +22,13 @@ function! <SID>InitVar(var, value)
     return 0
 endfunction
 
-call <SID>InitVar("g:autospecLocRegex", "[^ :]*:[0-9]\\+:.*(best-effort)")
+call <SID>InitVar("g:senseiLocRegex", "[^ :]*:[0-9]\\+:.*(best-effort)")
 call <SID>InitVar("g:ghcLocRegex", "[^ :]*:[0-9]\\+:\[0-9]*:")
-call <SID>InitVar("g:allLocRegex", "\\m\\(" . g:autospecLocRegex . "\\|" . g:ghcLocRegex . "\\)")
-call <SID>InitVar("g:autospec_cmd", "autospec")
-call <SID>InitVar("g:autospec_default_options", "test/Spec.hs")
-call <SID>InitVar("g:autospec_width", 80)
-call <SID>InitVar("g:autospec_window_loc", "right")
+call <SID>InitVar("g:allLocRegex", "\\m\\(" . g:senseiLocRegex . "\\|" . g:ghcLocRegex . "\\)")
+call <SID>InitVar("g:sensei_cmd", "sensei")
+call <SID>InitVar("g:sensei_default_options", "test/Spec.hs")
+call <SID>InitVar("g:sensei_width", 80)
+call <SID>InitVar("g:sensei_window_loc", "right")
 
 " Internal functions ---------------------------------------------------------
 
@@ -58,7 +58,7 @@ endfunction
 
 " Hooks ----------------------------------------------------------------------
 function! <SID>OnBufEnter()
-    set filetype=autospec
+    set filetype=sensei
     setlocal isfname-=:
     let t:oldHlSearch = &hlsearch
     set hlsearch
@@ -72,16 +72,16 @@ function! <SID>OnBufLeave()
 endfunction
 
 " Main -----------------------------------------------------------------------
-function! <SID>AutoSpecSpawn()
-    let splitLocation = g:autospec_window_loc ==# "left" ? "topleft " : "botright "
-    silent! execute splitLocation . 'vertical ' . g:autospec_width . ' split'
+function! <SID>SenseiSpawn()
+    let splitLocation = g:sensei_window_loc ==# "left" ? "topleft " : "botright "
+    silent! execute splitLocation . 'vertical ' . g:sensei_width . ' split'
     set winfixwidth
-    enew | let t:autospec_term_id = termopen(g:autospec_cmd)
-    let t:autospec_buf = bufnr('%')
-    let autospec_pattern = 'term://*//'.string(b:terminal_job_pid).':*'
-    let onbufenter = 'autocmd BufEnter ' . autospec_pattern . '* call <SID>OnBufEnter()'
-    let onbufleave = 'autocmd BufLeave ' . autospec_pattern . '* call <SID>OnBufLeave()'
-    augroup AutoSpec
+    enew | let t:sensei_term_id = termopen(g:sensei_cmd)
+    let t:sensei_buf = bufnr('%')
+    let sensei_pattern = 'term://*//'.string(b:terminal_job_pid).':*'
+    let onbufenter = 'autocmd BufEnter ' . sensei_pattern . '* call <SID>OnBufEnter()'
+    let onbufleave = 'autocmd BufLeave ' . sensei_pattern . '* call <SID>OnBufLeave()'
+    augroup Sensei
         autocmd!
         execute onbufenter
         execute onbufleave
@@ -90,4 +90,4 @@ function! <SID>AutoSpecSpawn()
 endfunction
 
 " Shortcuts ------------------------------------------------------------------
-command! Autospec call <SID>AutoSpecSpawn()
+command! Sensei call <SID>SenseiSpawn()
