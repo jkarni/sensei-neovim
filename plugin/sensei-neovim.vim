@@ -11,4 +11,4 @@
 
 
 " Shortcuts ------------------------------------------------------------------
-command! Sensei call sensei#SenseiSpawn()
+command! -nargs=1 Sensei call sensei#SenseiSpawn(<q-args>)

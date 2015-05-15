@@ -1,4 +1,9 @@
-
+" TODO:
+"   1) Remove unsafe SourceConfig
+"   2) Use correct dir for sensei to pick up .ghci
+"   3) Figure out automaticall whether to wrap sensei in cabal exec
+"   4) Autocomplete on filenames
+"
 " Configurable vars ----------------------------------------------------------
 function! <SID>InitVar(var, value)
     " Initialize variable if not already set
@@ -52,6 +57,7 @@ function! <SID>SourceConfig()
         endif
     endif
     if exists('b:sensei_config')
+        " TODO: this isn't safe...
         execute "silent! normal! source" . b:sensei_config
     endif
 endfunction
@@ -73,11 +79,16 @@ function! <SID>OnBufLeave()
 endfunction
 
 " Spawn -----------------------------------------------------------------------
-function! sensei#SenseiSpawn()
+function! sensei#SenseiSpawn(cmd)
     let splitLocation = g:sensei_window_loc ==# "left" ? "topleft " : "botright "
     silent! execute splitLocation . 'vertical ' . g:sensei_width . ' split'
     set winfixwidth
-    enew | let t:sensei_term_id = termopen(g:sensei_cmd)
+    if empty(a:cmd)
+        let l:sensei_cmd = g:sensei_cmd
+    else
+        let l:sensei_cmd = 'sensei ' . a:cmd
+    endif
+    enew | let t:sensei_term_id = termopen(l:sensei_cmd)
     let t:sensei_buf = bufnr('%')
     let sensei_pattern = 'term://*//'.string(b:terminal_job_pid).':*'
     let onbufenter = 'autocmd BufEnter ' . sensei_pattern . '* call <SID>OnBufEnter()'
