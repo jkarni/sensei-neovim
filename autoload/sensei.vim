@@ -1,8 +1,7 @@
 " TODO:
-"   1) Remove unsafe SourceConfig
-"   2) Use correct dir for sensei to pick up .ghci
-"   3) Figure out automaticall whether to wrap sensei in cabal exec
-"   4) Autocomplete on filenames
+"   1) Use correct dir for sensei to pick up .ghci
+"   2) Figure out automaticall whether to wrap sensei in cabal exec
+"   3) Autocomplete on filenames
 "
 " Configurable vars ----------------------------------------------------------
 function! <SID>InitVar(var, value)
@@ -40,25 +39,17 @@ function! <SID>OpenFile()
     execute "normal! vertical wincmd F"
 endfunction
 
-function! <SID>SourceConfig()
-    " Finds a .sensei-neovim.vim file, in the closest parent dir that
-    " contains a '*.cabal' file. Sources it if it exists
-    if !exists('b:sensei_config')
+function! <SID>FindGHCI()
+    " Finds a .ghci file directory
+    if !exists('b:sensei_ghci')
         let l:file_dir = expand('%:p:h')
         let l:dir = l:file_dir
         for _ in range(10)
-            if !empty(glob(l:dir . '*.cabal'))
+            if !empty(glob(l:dir . '.ghci'))
                 let l:file_dir = l:dir
                 break
             endif
         endfor
-        if filereadable(l:file_dir . '.sensei-neovim.rc')
-            let b:sensei_config = l:file_dir . .'sensei-neovim.rc'
-        endif
-    endif
-    if exists('b:sensei_config')
-        " TODO: this isn't safe...
-        execute "silent! normal! source" . b:sensei_config
     endif
 endfunction
 
@@ -88,6 +79,9 @@ function! sensei#SenseiSpawn(cmd)
     else
         let l:sensei_cmd = 'sensei ' . a:cmd
     endif
+    if exists('b:sensei_ghci')
+        lcd b:sensei_ghci
+    endif
     enew | let t:sensei_term_id = termopen(l:sensei_cmd)
     let t:sensei_buf = bufnr('%')
     let sensei_pattern = 'term://*//'.string(b:terminal_job_pid).':*'
@@ -102,7 +96,6 @@ function! sensei#SenseiSpawn(cmd)
 endfunction
 
 " Main ------------------------------------------------------------------------
-call <SID>SourceConfig()
 call <SID>InitVar("g:senseiLocRegex", "[^ :]*:[0-9]\\+:.*(best-effort)")
 call <SID>InitVar("g:ghcLocRegex", "[^ :]*:[0-9]\\+:\[0-9]*:")
 call <SID>InitVar("g:allLocRegex", "\\m\\(" . g:senseiLocRegex . "\\|" . g:ghcLocRegex . "\\)")
@@ -111,4 +104,4 @@ call <SID>InitVar("g:sensei_default_options", "test/Spec.hs")
 call <SID>InitVar("g:sensei_width", 80)
 call <SID>InitVar("g:sensei_window_loc", "right")
 call <SID>InitVar("g:sensei_cmd", "sensei -idoctest/ghci-wrapper/src -isrc -itest test/Spec.hs")
-
+call <SID>FindGHCI()
