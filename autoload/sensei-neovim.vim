@@ -9,16 +9,6 @@ function! <SID>InitVar(var, value)
     return 0
 endfunction
 
-call <SID>SourceConfig()
-call <SID>InitVar("g:senseiLocRegex", "[^ :]*:[0-9]\\+:.*(best-effort)")
-call <SID>InitVar("g:ghcLocRegex", "[^ :]*:[0-9]\\+:\[0-9]*:")
-call <SID>InitVar("g:allLocRegex", "\\m\\(" . g:senseiLocRegex . "\\|" . g:ghcLocRegex . "\\)")
-call <SID>InitVar("g:sensei_cmd", "sensei")
-call <SID>InitVar("g:sensei_default_options", "test/Spec.hs")
-call <SID>InitVar("g:sensei_width", 80)
-call <SID>InitVar("g:sensei_window_loc", "right")
-call <SID>InitVar("g:sensei_cmd = 'sensei -idoctest/ghci-wrapper/src -isrc -itest test/Spec.hs'")
-
 " Internal functions ---------------------------------------------------------
 
 function! <SID>Search()
@@ -82,7 +72,7 @@ function! <SID>OnBufLeave()
     call <SID>ClearSearch()
 endfunction
 
-" Main -----------------------------------------------------------------------
+" Spawn -----------------------------------------------------------------------
 function! <SID>SenseiSpawn()
     let splitLocation = g:sensei_window_loc ==# "left" ? "topleft " : "botright "
     silent! execute splitLocation . 'vertical ' . g:sensei_width . ' split'
@@ -99,4 +89,15 @@ function! <SID>SenseiSpawn()
     augroup END
     call <SID>OnBufEnter()
 endfunction
+
+" Main ------------------------------------------------------------------------
+call <SID>SourceConfig()
+call <SID>InitVar("g:senseiLocRegex", "[^ :]*:[0-9]\\+:.*(best-effort)")
+call <SID>InitVar("g:ghcLocRegex", "[^ :]*:[0-9]\\+:\[0-9]*:")
+call <SID>InitVar("g:allLocRegex", "\\m\\(" . g:senseiLocRegex . "\\|" . g:ghcLocRegex . "\\)")
+call <SID>InitVar("g:sensei_cmd", "sensei")
+call <SID>InitVar("g:sensei_default_options", "test/Spec.hs")
+call <SID>InitVar("g:sensei_width", 80)
+call <SID>InitVar("g:sensei_window_loc", "right")
+call <SID>InitVar("g:sensei_cmd", "sensei -idoctest/ghci-wrapper/src -isrc -itest test/Spec.hs")
 
