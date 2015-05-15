@@ -1,15 +1,3 @@
-""----------------------------------------------------------------------------
-"" sensei-neovim.vim
-""
-""   Use ":Sensei" to start sensei in a new buffer. In that buffer:
-""       n:   go to next filename
-""       N:   go to previous filename
-""       o:   open filename under cursor
-""
-""   Note that this requires neovim.
-""----------------------------------------------------------------------------
-
-" For non-nix, uncomment the following line
 
 " Configurable vars ----------------------------------------------------------
 function! <SID>InitVar(var, value)
@@ -112,5 +100,3 @@ function! <SID>SenseiSpawn()
     call <SID>OnBufEnter()
 endfunction
 
-" Shortcuts ------------------------------------------------------------------
-command! Sensei call <SID>SenseiSpawn()
