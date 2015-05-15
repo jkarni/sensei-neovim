@@ -1,5 +1,5 @@
 ""----------------------------------------------------------------------------
-"" sensei.vim
+"" sensei-neovim.vim
 ""
 ""   Use ":Sensei" to start sensei in a new buffer. In that buffer:
 ""       n:   go to next filename
@@ -10,7 +10,6 @@
 ""----------------------------------------------------------------------------
 
 " For non-nix, uncomment the following line
-"let g:sensei_cmd = "sensei -idoctest/ghci-wrapper/src -isrc -itest test/Spec.hs"
 
 " Configurable vars ----------------------------------------------------------
 function! <SID>InitVar(var, value)
@@ -22,6 +21,7 @@ function! <SID>InitVar(var, value)
     return 0
 endfunction
 
+call <SID>SourceConfig()
 call <SID>InitVar("g:senseiLocRegex", "[^ :]*:[0-9]\\+:.*(best-effort)")
 call <SID>InitVar("g:ghcLocRegex", "[^ :]*:[0-9]\\+:\[0-9]*:")
 call <SID>InitVar("g:allLocRegex", "\\m\\(" . g:senseiLocRegex . "\\|" . g:ghcLocRegex . "\\)")
@@ -29,6 +29,7 @@ call <SID>InitVar("g:sensei_cmd", "sensei")
 call <SID>InitVar("g:sensei_default_options", "test/Spec.hs")
 call <SID>InitVar("g:sensei_width", 80)
 call <SID>InitVar("g:sensei_window_loc", "right")
+call <SID>InitVar("g:sensei_cmd = 'sensei -idoctest/ghci-wrapper/src -isrc -itest test/Spec.hs'")
 
 " Internal functions ---------------------------------------------------------
 
@@ -55,6 +56,28 @@ function! <SID>OpenFile()
     let win_width = winwidth(".")
     execute "normal! vertical wincmd F"
 endfunction
+
+function! <SID>SourceConfig()
+    " Finds a .sensei-neovim.vim file, in the closest parent dir that
+    " contains a '*.cabal' file. Sources it if it exists
+    if !exists('b:sensei_config')
+        let l:file_dir = expand('%:p:h')
+        let l:dir = l:file_dir
+        for _ in range(10)
+            if !empty(glob(l:dir . '*.cabal'))
+                let l:file_dir = l:dir
+                break
+            endif
+        endfor
+        if filereadable(l:file_dir . '.sensei-neovim.rc')
+            let b:sensei_config = l:file_dir . .'sensei-neovim.rc'
+        endif
+    endif
+    if exists('b:sensei_config')
+        execute "silent! normal! source" . b:sensei_config
+    endif
+endfunction
+
 
 " Hooks ----------------------------------------------------------------------
 function! <SID>OnBufEnter()
