@@ -6,8 +6,8 @@ CONTENTS                                               *sensei-neovim-contents*
     1. Intro............................|sensei-neovim|
         1.1 Requirements................|sensei-neovim-requirements|
     2. Functionality....................|sensei-neovim-functionality|
-        2.1 Configuration...............|sensei-neovim-configuration|
-        2.2 Options.....................|sensei-neovim-options|
+        2.1 Commands....................|sensei-neovim-commands|
+        2.2 Configuration...............|sensei-neovim-configuration|
     3. License..........................|sensei-neovim-license|
 
 ==============================================================================
@@ -18,13 +18,43 @@ like the quickfix window. In constrast with the quickfix window, however, it
 uses neovim's "termopen", allowing the quickfix command to be updated
 continuously.
 
-It was designed with sensei (https://github.com/hspec/sensei) in mind,
-although it should work with other tools as well.
-
 ------------------------------------------------------------------------------
 1.1 Requirements                                   *sensei-neovim-requirements*
 
-sensei-neovim requires neovim with +terminal (termopen) support.
+sensei-neovim requires neovim with +terminal (termopen) support. It also
+probably only makes sense with sensei <https://github.com/hspec/sensei>.
 
 ==============================================================================
 2. Functionality                                  *sensei-neovim-functionality*
+
+------------------------------------------------------------------------------
+2.1 Commands                                           *sensei-neovim-commands*
+
+:Sensei <file> <args>                                                 *:Sensei*
+
+    Runs sensei for the given file in a terminal buffer. Extra arguments are
+    passed to sensei. If sensei-neovim finds a cabal sandbox in the current
+    directory or one of its antecessors, it wraps the call to sensei in 'cabal
+    exec'. Any options in |g:sensei_opts| are also used.
+
+
+------------------------------------------------------------------------------
+2.2 Configuration                                 *sensei-neovim-configuration*
+
+g:sensei_cmd                                                     *g:sensei_cmd*
+
+    The command to run. Default: 'sensei'
+
+g:sensei_opts                                                   *g:sensei_opts*
+
+    Options to always pass to the command, in addition to those provided by the
+    call to |:Sensei|. Default: '-isrc -itest'
+
+g:sensei_width                                                 *g:sensei_width*
+
+    The width of the sensei-neovim window. Default: 80
+
+==============================================================================
+3. License                                                     *sensei-license*
+
+    BSD3

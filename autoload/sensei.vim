@@ -1,7 +1,5 @@
 " TODO:
-"   1) Use correct dir for sensei to pick up .ghci
-"   2) Figure out automaticall whether to wrap sensei in cabal exec
-"   3) Autocomplete on filenames
+"   1) Autocomplete on filenames
 "
 " Configurable vars ----------------------------------------------------------
 function! <SID>InitVar(var, value)
@@ -95,7 +93,8 @@ function! <SID>OnBufLeave()
 endfunction
 
 " Spawn -----------------------------------------------------------------------
-function! sensei#SenseiSpawn(cmd)
+function! sensei#SenseiSpawn(cmd, ...)
+    let l:cmdargs = join(a:000, ' ')
     let splitLocation = g:sensei_window_loc ==# "left" ? "topleft " : "botright "
     silent! execute splitLocation . 'vertical ' . g:sensei_width . ' split'
     set winfixwidth
@@ -105,7 +104,7 @@ function! sensei#SenseiSpawn(cmd)
         let l:sensei_cmd = 'sensei ' . a:cmd
     endif
     if <SID>IsSandbox()
-        let l:sensei_cmd = 'cabal exec ' . l:sensei_cmd . ' -- ' . g:sensei_opts
+        let l:sensei_cmd = 'cabal exec ' . l:sensei_cmd . ' -- ' . g:sensei_opts . ' ' . l:cmdargs
     else
         let l:sensei_cmd = l:sensei_cmd . ' ' . g:sensei_opts
     endif
@@ -130,6 +129,5 @@ call <SID>InitVar("g:ghcLocRegex", "[^ :]*:[0-9]\\+:\[0-9]*:")
 call <SID>InitVar("g:allLocRegex", "\\m\\(" . g:senseiLocRegex . "\\|" . g:ghcLocRegex . "\\)")
 call <SID>InitVar("g:sensei_cmd", "sensei")
 call <SID>InitVar("g:sensei_opts", "-isrc -itest")
-call <SID>InitVar("g:sensei_default_options", "test/Spec.hs")
 call <SID>InitVar("g:sensei_width", 80)
 call <SID>InitVar("g:sensei_window_loc", "right")
