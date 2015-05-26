@@ -7,7 +7,8 @@ CONTENTS                                               *sensei-neovim-contents*
         1.1 Requirements................|sensei-neovim-requirements|
     2. Functionality....................|sensei-neovim-functionality|
         2.1 Commands....................|sensei-neovim-commands|
-        2.2 Configuration...............|sensei-neovim-configuration|
+        2.2 Bindings....................|sensei-bindings|
+        2.3 Configuration...............|sensei-neovim-configuration|
     3. License..........................|sensei-neovim-license|
 
 ==============================================================================
@@ -37,9 +38,17 @@ probably only makes sense with sensei <https://github.com/hspec/sensei>.
     directory or one of its antecessors, it wraps the call to sensei in 'cabal
     exec'. Any options in |g:sensei_opts| are also used.
 
+------------------------------------------------------------------------------
+2.2 Bindings                                                  *sensei-bindings*
+
+These bindings only affect the sensei terminal buffer.
+
+n   Navigate to next file location
+N   Navigate to previous file location
+o   Open file location under cursor in a new buffer.
 
 ------------------------------------------------------------------------------
-2.2 Configuration                                 *sensei-neovim-configuration*
+2.3 Configuration                                 *sensei-neovim-configuration*
 
 g:sensei_cmd                                                     *g:sensei_cmd*
 
